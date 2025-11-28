@@ -1,0 +1,14 @@
+# ~/.config/yazi/keymap.toml
+
+[manager]
+
+prepend_keymap = [
+  # Quick video preview with mpv (press 'v')
+  { on = [ "v" ], run = '''shell "mpv --geometry=50%x50% --force-window=immediate --loop '$@'" --orphan''', desc = "Preview video in mpv" },
+
+  # Preview video in small floating window (press Shift+V)
+  { on = [ "V" ], run = '''shell "mpv --geometry=640x360 --ontop --no-border --loop --mute '$@'" --orphan''', desc = "Preview video in small window" },
+
+  # Open with mpv fullscreen (press Enter on video files)
+  { on = [ "<Enter>" ], run = "open", desc = "Open file" },
+]

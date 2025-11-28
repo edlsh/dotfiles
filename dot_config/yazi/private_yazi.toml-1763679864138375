@@ -1,0 +1,30 @@
+# ~/.config/yazi/yazi.toml
+
+[manager]
+ratio          = [1, 4, 3]    # Layout: Parent, Current, Preview
+sort_by        = "natural"    # Natural sort order
+sort_sensitive = false        # Case insensitive
+sort_reverse   = false
+sort_dir_first = true         # Directories first
+show_hidden    = true         # Show hidden files by default
+linemode       = "size"       # Show size by default
+
+[preview]
+tab_size        = 2
+max_width       = 600
+max_height      = 900
+cache_dir       = ""
+image_filter    = "lanczos3"  # High quality downscaling
+image_quality   = 80
+sixel_fraction  = 15
+ueberzug_scale  = 1
+ueberzug_offset = [0, 0, 0, 0]
+
+[opener]
+edit = [
+    { run = 'nvim "$@"', block = true,  desc = "Neovim" },
+    { run = 'code "$@"', orphan = true, desc = "VS Code" },
+]
+open = [
+    { run = 'open "$@"', desc = "Open" },
+]

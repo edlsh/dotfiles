@@ -1,0 +1,92 @@
+# ============================================================
+# ZSH Configuration - Modernized
+# ============================================================
+
+# --- Environment ---
+typeset -U PATH  # Ensure unique PATH entries
+export PATH="$HOME/.local/bin:$PATH"
+export PATH="$HOME/.atuin/bin:$PATH"
+export PATH="$HOME/.bun/bin:$PATH"
+export PATH="/Users/enzolucchesi/.antigravity/antigravity/bin:$PATH"
+
+# --- History ---
+HISTFILE=~/.zsh_history
+HISTSIZE=50000
+SAVEHIST=50000
+setopt HIST_IGNORE_ALL_DUPS
+setopt HIST_FIND_NO_DUPS
+setopt HIST_SAVE_NO_DUPS
+setopt SHARE_HISTORY
+setopt EXTENDED_HISTORY
+
+# --- Zinit Plugin Manager ---
+ZINIT_HOME="${XDG_DATA_HOME:-${HOME}/.local/share}/zinit/zinit.git"
+[ ! -d $ZINIT_HOME ] && mkdir -p "$(dirname $ZINIT_HOME)"
+[ ! -d $ZINIT_HOME/.git ] && git clone https://github.com/zdharma-continuum/zinit.git "$ZINIT_HOME"
+source "${ZINIT_HOME}/zinit.zsh"
+
+# --- Completions (let zinit handle compinit) ---
+zinit wait lucid for \
+    atinit"zicompinit; zicdreplay" \
+    zdharma-continuum/fast-syntax-highlighting \
+    atload"_zsh_autosuggest_start" \
+    zsh-users/zsh-autosuggestions \
+    blockf atpull'zinit creinstall -q .' \
+    zsh-users/zsh-completions
+
+# Git workflow enhancement
+zinit wait"0a" lucid for wfxr/forgit
+
+# --- mise (replaces nvm/pyenv/rbenv) ---
+eval "$(mise activate zsh)"
+
+# --- Modern CLI Tools ---
+eval "$(starship init zsh)"
+eval "$(zoxide init zsh)"
+eval "$(atuin init zsh)"
+source <(fzf --zsh)
+
+# --- Eza Aliases (modern ls) ---
+alias ls='eza --icons --color=always'
+alias la='eza -la --icons --color=always'
+alias ll='eza -l --icons --color=always'
+alias lt='eza --tree --icons --color=always'
+alias l.='eza -ld .* --icons --color=always'
+alias lls='eza -la --total-size --icons --color=always'
+alias lg='eza -la --git --icons --color=always'  # Show git status
+
+# --- Custom Aliases ---
+alias zii="zinit"
+alias zi="__zoxide_zi"
+alias code='/Applications/Visual\ Studio\ Code.app/Contents/Resources/app/bin/code'
+
+# Claude/Codex aliases
+alias claudef="claude --dangerously-skip-permissions"
+alias codexf="codex --dangerously-bypass-approvals-and-sandbox"
+alias claude-second="CLAUDE_CONFIG_DIR=~/.claude-second claude"
+alias claudef2="CLAUDE_CONFIG_DIR=~/.claude-second claude --dangerously-skip-permissions"
+alias coderf='coder -- --danger-full-access'
+alias ccrf="ccr code --dangerously-skip-permissions"
+
+# AWS profile switching
+alias aws-course='export AWS_PROFILE=course'
+alias aws-default='export AWS_PROFILE=default'
+
+# --- Session Finders ---
+fs() {
+    [[ "$1" == "--help" || "$1" == "-h" ]] && { find-session --help; return; }
+    eval "$(find-session --shell "$@" | sed '/^$/d')"
+}
+
+fcs-codex() {
+    [[ "$1" == "--help" || "$1" == "-h" ]] && { find-codex-session --help; return; }
+    eval "$(find-codex-session --shell "$@" | sed '/^$/d')"
+}
+
+# --- Optional Tool Loading ---
+[[ -f ~/.tmux_aliases ]] && source ~/.tmux_aliases
+[[ -f ~/.config/broot/launcher/bash/br ]] && source ~/.config/broot/launcher/bash/br
+[[ -s "$HOME/.bun/_bun" ]] && source "$HOME/.bun/_bun"
+
+# VS Code shell integration (only in VS Code terminal)
+[[ "$TERM_PROGRAM" == "vscode" ]] && . "$(code --locate-shell-integration-path zsh)"

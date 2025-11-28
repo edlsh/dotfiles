@@ -1,0 +1,59 @@
+# ~/.config/yazi/yazi.toml
+
+[mgr]
+ratio          = [1, 4, 3]    # Layout: Parent, Current, Preview
+sort_by        = "natural"    # Natural sort order
+sort_sensitive = false        # Case insensitive
+sort_reverse   = false
+sort_dir_first = true         # Directories first
+show_hidden    = true         # Show hidden files by default
+linemode       = "size"       # Show size by default
+
+[preview]
+tab_size        = 2
+max_width       = 600
+max_height      = 900
+cache_dir       = ""
+image_filter    = "lanczos3"  # High quality downscaling
+image_quality   = 80
+sixel_fraction  = 15
+ueberzug_scale  = 1
+ueberzug_offset = [0, 0, 0, 0]
+
+[plugin]
+prepend_preloaders = [
+  # Use mediainfo for all media files
+  { mime = "video/*", run = "mediainfo" },
+  { mime = "audio/*", run = "mediainfo" },
+  { mime = "image/*", run = "mediainfo" },
+  { mime = "application/subrip", run = "mediainfo" },
+]
+
+prepend_previewers = [
+  # Use mediainfo for all media files
+  { mime = "video/*", run = "mediainfo" },
+  { mime = "audio/*", run = "mediainfo" },
+  { mime = "image/*", run = "mediainfo" },
+  { mime = "application/subrip", run = "mediainfo" },
+]
+
+[opener]
+edit = [
+    { run = 'nvim "$@"', block = true,  desc = "Neovim" },
+    { run = 'code "$@"', orphan = true, desc = "VS Code" },
+]
+play = [
+    { run = 'mpv "$@"', orphan = true, desc = "MPV" },
+    { run = 'mpv --geometry=50%x50% --loop "$@"', orphan = true, desc = "MPV Preview" },
+]
+open = [
+    { run = 'open "$@"', desc = "Open" },
+]
+
+[[open.prepend_rules]]
+mime = "inode/directory"
+use = "open"
+
+[[open.prepend_rules]]
+mime = "video/*"
+use = "play"

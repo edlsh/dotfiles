@@ -1,0 +1,24 @@
+# Files to ignore when applying chezmoi
+README.md
+LICENSE
+.DS_Store
+**/.DS_Store
+
+# Secrets - never track these
+.secrets
+.env
+.env.*
+*.pem
+*.key
+
+# Editor files
+**/.idea
+**/.vscode
+*~
+*.swp
+*.swo
+
+# OS files
+.Trash
+.Spotlight-V100
+.fseventsd

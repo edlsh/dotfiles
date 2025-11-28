@@ -1,0 +1,14 @@
+# Chezmoi configuration
+# This file is a template that will prompt for values on first run
+
+[data]
+    name = "{{ promptStringOnce . "name" "Your full name" }}"
+    email = "{{ promptStringOnce . "email" "Your email address" }}"
+    github_username = "{{ promptStringOnce . "github_username" "Your GitHub username" }}"
+
+[edit]
+    command = "nvim"
+
+[git]
+    autoCommit = false
+    autoPush = false

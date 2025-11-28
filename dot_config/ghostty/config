@@ -1,0 +1,15 @@
+# Ghostty Configuration
+theme = catppuccin-mocha.conf
+
+# Fix for SSH/tmux compatibility - commented out to use Ghostty's native support
+# term = xterm-256color
+
+# Optional: Set font and size
+# font-family = "JetBrains Mono"
+# font-size = 14
+
+# Optional: Window settings
+# window-width = 80
+# window-height = 24
+osc-color-report-format = none
+keybind = shift+enter=text:\x1b\r

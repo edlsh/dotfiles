@@ -1,0 +1,30 @@
+# ============================================================
+# Bash Configuration
+# ============================================================
+
+# --- Aliases ---
+alias claudef="claude --dangerously-skip-permissions"
+alias codexf="codex --dangerously-bypass-approvals-and-sandbox"
+
+# --- Atuin Shell History ---
+. "$HOME/.atuin/bin/env"
+[[ -f ~/.bash-preexec.sh ]] && source ~/.bash-preexec.sh
+eval "$(atuin init bash)"
+
+# --- Cargo/Rust ---
+. "$HOME/.cargo/env"
+
+# --- Broot ---
+source /Users/enzolucchesi/.config/broot/launcher/bash/br
+
+# ============================================================
+# API Keys - Loaded via 1Password
+# ============================================================
+# Secrets are stored in 1Password and loaded via op run
+# See ~/.secrets/op.env for the 1Password references
+# Usage: op run --env-file ~/.secrets/op.env -- <command>
+# ============================================================
+# For interactive shells, export the resolved values:
+if command -v op &> /dev/null && [[ -f ~/.secrets/op.env ]]; then
+    eval "$(op run --env-file ~/.secrets/op.env -- env | grep -E '^(OPENROUTER|OPENAI|GEMINI)_API_KEY=' | sed 's/^/export /')" 2>/dev/null
+fi
