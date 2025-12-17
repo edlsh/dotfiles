@@ -4,6 +4,12 @@
 
 set -eufo pipefail
 
+# Skip if core tools are already installed (existing setup)
+if command -v starship &>/dev/null && command -v atuin &>/dev/null && command -v eza &>/dev/null; then
+    echo "✅ Core tools already installed, skipping package installation"
+    exit 0
+fi
+
 echo "🚀 Setting up Linux dotfiles environment..."
 
 # ============================================================

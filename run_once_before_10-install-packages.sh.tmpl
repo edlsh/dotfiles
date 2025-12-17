@@ -10,6 +10,12 @@ echo "🚀 Setting up dotfiles environment..."
 # ============================================================
 {{ if eq .chezmoi.os "darwin" -}}
 
+# Skip if core tools are already installed (existing setup)
+if command -v starship &>/dev/null && command -v atuin &>/dev/null && command -v eza &>/dev/null; then
+    echo "✅ Core tools already installed, skipping package installation"
+    exit 0
+fi
+
 # Install Xcode Command Line Tools if needed
 if ! xcode-select -p &>/dev/null; then
     echo "📦 Installing Xcode Command Line Tools..."
