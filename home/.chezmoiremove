@@ -1,0 +1,44 @@
+# =============================================================================
+# Chezmoi Remove File - Files to Delete from Destination
+# =============================================================================
+# Files and patterns listed here will be REMOVED from $HOME when
+# `chezmoi apply` is run. Use with caution!
+#
+# Patterns support glob syntax. Use this file to clean up deprecated
+# dotfiles that are no longer needed.
+
+# -----------------------------------------------------------------------------
+# Deprecated/Backup Files
+# -----------------------------------------------------------------------------
+.bashrc.backup
+.bashrc.bak
+.zshrc.pre-*
+.zshrc.backup
+.zshrc.bak
+
+# Old config backups
+.gitconfig.backup
+.gitconfig.bak
+.tmux.conf.backup
+.tmux.conf.bak
+
+# -----------------------------------------------------------------------------
+# Deprecated Config Locations
+# -----------------------------------------------------------------------------
+# (Uncomment if you've migrated configs to new locations)
+# .bash_profile
+# .bash_aliases
+
+# -----------------------------------------------------------------------------
+# Editor Backup Files
+# -----------------------------------------------------------------------------
+.config/nvim/plugin/**/*.bak
+.config/nvim/**/*~
+
+# -----------------------------------------------------------------------------
+# Deprecated Tool Configs
+# -----------------------------------------------------------------------------
+# (Add old tool configs that have been replaced)
+# .nvm/
+# .pyenv/
+# .rbenv/

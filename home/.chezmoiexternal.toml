@@ -1,0 +1,50 @@
+# External dependencies managed by chezmoi
+# These are downloaded/cloned automatically during `chezmoi apply`
+
+# =============================================================================
+# ZSH Plugin Manager - Zinit
+# =============================================================================
+[".local/share/zinit/zinit.git"]
+    type = "git-repo"
+    url = "https://github.com/zdharma-continuum/zinit.git"
+    refreshPeriod = "168h"  # Weekly refresh
+
+# =============================================================================
+# Tmux Plugin Manager (TPM)
+# =============================================================================
+[".tmux/plugins/tpm"]
+    type = "git-repo"
+    url = "https://github.com/tmux-plugins/tpm.git"
+    refreshPeriod = "168h"
+
+# =============================================================================
+# Yazi Plugins
+# =============================================================================
+# Note: yazi plugins are managed in dot_config/yazi/plugins
+# If you want to move them to external management, uncomment below:
+
+# [".config/yazi/plugins/mediainfo.yazi"]
+#     type = "git-repo"
+#     url = "https://github.com/Ape/mediainfo.yazi.git"
+#     refreshPeriod = "168h"
+
+# =============================================================================
+# Starship (binary download - optional, prefer package manager)
+# =============================================================================
+# Uncomment if you want chezmoi to manage starship binary directly
+# {{ if eq .chezmoi.os "linux" }}
+# [".local/bin/starship"]
+#     type = "archive-file"
+#     url = "https://github.com/starship/starship/releases/latest/download/starship-x86_64-unknown-linux-gnu.tar.gz"
+#     path = "starship"
+#     executable = true
+#     refreshPeriod = "720h"  # Monthly
+# {{ end }}
+
+# =============================================================================
+# Catppuccin Themes (optional - for consistent theming)
+# =============================================================================
+# [".config/bat/themes/Catppuccin-mocha.tmTheme"]
+#     type = "file"
+#     url = "https://raw.githubusercontent.com/catppuccin/bat/main/Catppuccin-mocha.tmTheme"
+#     refreshPeriod = "720h"

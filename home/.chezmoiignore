@@ -1,4 +1,24 @@
-# Files to ignore when applying chezmoi
+# =============================================================================
+# Chezmoi Ignore File - Cross-Platform Conditionals
+# =============================================================================
+# This file uses Go template syntax to conditionally ignore files
+# based on OS, machine type, and other factors.
+
+{{- $isHeadless := false -}}
+{{- if hasKey . "isHeadless" -}}
+{{-   $isHeadless = .isHeadless -}}
+{{- end -}}
+
+{{- $machineId := "" -}}
+{{- if hasKey . "machineId" -}}
+{{-   $machineId = .machineId -}}
+{{- else if hasKey . "machine" -}}
+{{-   $machineId = .machine -}}
+{{- end -}}
+
+# -----------------------------------------------------------------------------
+# Always Ignored (All Platforms)
+# -----------------------------------------------------------------------------
 README.md
 LICENSE
 Makefile
@@ -10,25 +30,68 @@ Makefile
 .github
 .git
 
-# Secrets - never track these
+# -----------------------------------------------------------------------------
+# Secrets - NEVER track these
+# -----------------------------------------------------------------------------
 .secrets
 .env
 .env.*
 *.pem
 *.key
+!*.pub
 
-# Editor files
+# -----------------------------------------------------------------------------
+# Editor/IDE Files
+# -----------------------------------------------------------------------------
 **/.idea
 **/.vscode
 *~
 *.swp
 *.swo
+*.bak
+*-backup
 
-# OS files
+# -----------------------------------------------------------------------------
+# OS-Specific Files
+# -----------------------------------------------------------------------------
 .Trash
 .Spotlight-V100
 .fseventsd
+Thumbs.db
+Desktop.ini
 
-# Backup files
-*.bak
-*-backup
+# -----------------------------------------------------------------------------
+# Platform-Conditional Ignores
+# -----------------------------------------------------------------------------
+
+# macOS-only files (ignore on non-Darwin)
+{{ if ne .chezmoi.os "darwin" }}
+Brewfile
+Library/**
+.config/ghostty/**
+{{ end }}
+
+# Linux-only files (ignore on non-Linux)
+{{ if ne .chezmoi.os "linux" }}
+.config/systemd/**
+{{ end }}
+
+# -----------------------------------------------------------------------------
+# Machine-Type Conditional Ignores
+# -----------------------------------------------------------------------------
+
+# Headless server exclusions (GUI-only configs)
+{{ if $isHeadless }}
+.config/ghostty/**
+.config/yazi/**
+{{ end }}
+
+# -----------------------------------------------------------------------------
+# Machine-Specific Ignores
+# -----------------------------------------------------------------------------
+
+# Personal Mac only (Antigravity, CLI Proxy, etc.)
+{{ if and $machineId (ne $machineId "personal-mac") }}
+.antigravity/**
+.cli-proxy-api/**
+{{ end }}

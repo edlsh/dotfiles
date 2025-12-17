@@ -1,11 +1,103 @@
 # Chezmoi configuration
 # This file is a template that will prompt for values on first run
 
+{{- /* Detect machine characteristics */ -}}
+{{- $osType := .chezmoi.os -}}
+{{- $arch := .chezmoi.arch -}}
+{{- $hostname := .chezmoi.hostname -}}
+
+{{- /* Detect if laptop vs desktop */ -}}
+{{- $isLaptop := false -}}
+{{- if eq .chezmoi.os "darwin" -}}
+{{-   if contains "MacBook" (output "system_profiler" "SPHardwareDataType" | toString) -}}
+{{-     $isLaptop = true -}}
+{{-   end -}}
+{{- else if eq .chezmoi.os "linux" -}}
+{{-   if lookPath "hostnamectl" -}}
+{{-     $chassisType := output "hostnamectl" "--json=short" | mustFromJson -}}
+{{-     if eq $chassisType.Chassis "laptop" -}}
+{{-       $isLaptop = true -}}
+{{-     end -}}
+{{-   end -}}
+{{- end -}}
+
+{{- /* Detect Linux distro */ -}}
+{{- $distro := "" -}}
+{{- if eq .chezmoi.os "linux" -}}
+{{-   if stat "/etc/os-release" -}}
+{{-     $distro = output "sh" "-c" "grep '^ID=' /etc/os-release | cut -d= -f2 | tr -d '\"'" | trim -}}
+{{-   end -}}
+{{- end -}}
+
+{{- /* Get existing values or defaults */ -}}
+{{- $name := "" -}}
+{{- $email := "" -}}
+{{- $github_username := "" -}}
+{{- $machineId := "" -}}
+{{- $isPersonal := true -}}
+{{- $isHeadless := false -}}
+
+{{- /* Check for existing values first */ -}}
+{{- if hasKey . "name" -}}
+{{-   $name = .name -}}
+{{- end -}}
+{{- if hasKey . "email" -}}
+{{-   $email = .email -}}
+{{- end -}}
+{{- if hasKey . "github_username" -}}
+{{-   $github_username = .github_username -}}
+{{- end -}}
+{{- if hasKey . "machineId" -}}
+{{-   $machineId = .machineId -}}
+{{- else if hasKey . "machine" -}}
+{{-   $machineId = .machine -}}
+{{- end -}}
+{{- if hasKey . "isPersonal" -}}
+{{-   $isPersonal = .isPersonal -}}
+{{- end -}}
+{{- if hasKey . "isHeadless" -}}
+{{-   $isHeadless = .isHeadless -}}
+{{- end -}}
+
+{{- /* Prompt for missing values if interactive */ -}}
+{{- if stdinIsATTY -}}
+{{-   if eq $name "" -}}
+{{-     $name = promptStringOnce . "name" "Your full name" -}}
+{{-   end -}}
+{{-   if eq $email "" -}}
+{{-     $email = promptStringOnce . "email" "Your email address" -}}
+{{-   end -}}
+{{-   if eq $github_username "" -}}
+{{-     $github_username = promptStringOnce . "github_username" "Your GitHub username" -}}
+{{-   end -}}
+{{-   if eq $machineId "" -}}
+{{-     $machineId = promptStringOnce . "machineId" "Machine identifier (e.g., personal-mac, work-linux, server)" -}}
+{{-   end -}}
+{{-   if not (hasKey . "isPersonal") -}}
+{{-     $isPersonal = promptBoolOnce . "isPersonal" "Is this a personal machine" -}}
+{{-   end -}}
+{{-   if not (hasKey . "isHeadless") -}}
+{{-     $isHeadless = promptBoolOnce . "isHeadless" "Is this a headless server (no GUI)" -}}
+{{-   end -}}
+{{- end }}
+
 [data]
-    name = "{{ promptStringOnce . "name" "Your full name" }}"
-    email = "{{ promptStringOnce . "email" "Your email address" }}"
-    github_username = "{{ promptStringOnce . "github_username" "Your GitHub username" }}"
-    machine = "{{ promptStringOnce . "machine" "Machine identifier (e.g., personal-mac, work-linux)" }}"
+    # User identity
+    name = {{ $name | quote }}
+    email = {{ $email | quote }}
+    github_username = {{ $github_username | quote }}
+    
+    # Machine classification
+    machineId = {{ $machineId | quote }}
+    osType = {{ $osType | quote }}
+    arch = {{ $arch | quote }}
+    hostname = {{ $hostname | quote }}
+    isLaptop = {{ $isLaptop }}
+    isPersonal = {{ $isPersonal }}
+    isHeadless = {{ $isHeadless }}
+{{- if eq .chezmoi.os "linux" }}
+    distro = {{ $distro | quote }}
+{{- end }}
 
 [edit]
     command = "nvim"
@@ -13,3 +105,10 @@
 [git]
     autoCommit = false
     autoPush = false
+
+{{- if eq .chezmoi.os "darwin" }}
+
+[merge]
+    command = "nvim"
+    args = ["-d", "{{ "{{" }} .Destination {{ "}}" }}", "{{ "{{" }} .Source {{ "}}" }}", "{{ "{{" }} .Target {{ "}}" }}"]
+{{- end }}

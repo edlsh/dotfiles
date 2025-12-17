@@ -1,11 +1,24 @@
-# Shared tool configuration across platforms
-tools:
-  # CLI tools installed on all platforms
-  common:
+# =============================================================================
+# Chezmoi Shared Data - Cross-Platform Configuration
+# =============================================================================
+
+# -----------------------------------------------------------------------------
+# Package Management
+# -----------------------------------------------------------------------------
+packages:
+  # Core tools - installed on ALL platforms
+  core:
     - zsh
     - starship
     - atuin
     - tmux
+    - neovim
+    - git
+    - gh
+    - mise
+
+  # CLI enhancement tools - installed on ALL platforms
+  cli:
     - eza
     - bat
     - ripgrep
@@ -14,36 +27,66 @@ tools:
     - zoxide
     - jq
     - yq
-    - neovim
-    - git
-    - gh
-    - mise
-    - btop
     - delta
+    - btop
+    - television
 
-  # macOS-only tools
-  darwin:
+  # macOS-specific tools
+  darwin_only:
     - broot
-    - television
 
-  # Linux-only tools  
-  linux:
+  # Linux-specific tools
+  linux_only:
     - keychain
-    - television
 
-# Platform-specific paths
+  # macOS casks (GUI apps)
+  darwin_casks:
+    - 1password-cli
+    # - ghostty  # Uncomment when available via Homebrew
+
+  # Tools that require GUI (excluded on headless servers)
+  gui_required:
+    - ghostty
+    - yazi
+
+# -----------------------------------------------------------------------------
+# Platform-Specific Paths
+# -----------------------------------------------------------------------------
 paths:
   darwin:
     homebrew: /opt/homebrew
     gh: /opt/homebrew/bin/gh
+    code: /Applications/Visual\ Studio\ Code.app/Contents/Resources/app/bin/code
   linux:
     homebrew: /home/linuxbrew/.linuxbrew
     gh: /usr/bin/gh
+    code: /usr/bin/code
 
-# Editor configuration
+# -----------------------------------------------------------------------------
+# Editor Configuration
+# -----------------------------------------------------------------------------
 editor: nvim
+visual: nvim
 
-# 1Password secrets (using correct field names per item)
+# -----------------------------------------------------------------------------
+# Shell Configuration
+# -----------------------------------------------------------------------------
+shell:
+  default: zsh
+  history_size: 50000
+
+# -----------------------------------------------------------------------------
+# Theme Configuration
+# -----------------------------------------------------------------------------
+theme:
+  name: catppuccin-mocha
+  variant: mocha
+
+# -----------------------------------------------------------------------------
+# 1Password Secrets
+# Using op:// secret reference syntax
+# See: https://developer.1password.com/docs/cli/secret-reference-syntax
+# -----------------------------------------------------------------------------
 secrets:
   OPENAI_API_KEY: "op://Development/OPENAI_API_KEY/api key"
   OPENROUTER_API_KEY: "op://Development/OPENROUTER_API_KEY/token"
@@ -52,3 +95,15 @@ secrets:
   GROQ_API_KEY: "op://Development/GROQ_API_KEY/credential"
   DEEPSEEK_API_KEY: "op://Development/DEEPSEEK_API_KEY/password"
   TAVILY_API_KEY: "op://Development/TAVILY_API_KEY/password"
+
+# -----------------------------------------------------------------------------
+# Machine-Specific Feature Flags
+# These can be overridden in .chezmoi.toml.tmpl per machine
+# -----------------------------------------------------------------------------
+features:
+  # Enable 1Password CLI integration
+  onepassword: true
+  # Enable AI coding assistants
+  ai_assistants: true
+  # Enable development containers
+  devcontainers: false
