@@ -2,13 +2,6 @@
 # ZSH Configuration - Cross-Platform (chezmoi managed)
 # ============================================================
 
-{{- if eq .chezmoi.os "linux" }}
-# --- Warp Terminal Integration (Linux) ---
-if [[ "$-" == *i* ]]; then
-  printf $'\eP$f{"hook": "SourcedRcFileForWarp", "value": { "shell": "zsh", "uname": "Linux" }}\e\\'
-fi
-{{- end }}
-
 # --- Environment ---
 typeset -U PATH  # Ensure unique PATH entries
 export PATH="$HOME/.local/bin:$PATH"
