@@ -1,0 +1,36 @@
+# Homebrew Brewfile - Cross-platform packages
+# This file is used by run_onchange script to install packages
+
+# Taps
+tap "homebrew/bundle"
+
+# Shell & Terminal
+brew "zsh"
+brew "starship"
+brew "atuin"
+brew "tmux"
+
+# Modern CLI Tools
+brew "eza"
+brew "bat"
+brew "ripgrep"
+brew "fd"
+brew "fzf"
+brew "zoxide"
+brew "jq"
+brew "yq"
+brew "delta"
+brew "television"
+
+# Development
+brew "neovim"
+brew "git"
+brew "gh"
+brew "mise"
+
+# Utilities
+brew "btop"
+brew "broot"
+
+# 1Password CLI (for secrets)
+cask "1password-cli"

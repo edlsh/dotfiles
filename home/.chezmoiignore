@@ -1,8 +1,14 @@
 # Files to ignore when applying chezmoi
 README.md
 LICENSE
+Makefile
 .DS_Store
 **/.DS_Store
+
+# Repo metadata (not dotfiles)
+.mise
+.github
+.git
 
 # Secrets - never track these
 .secrets
@@ -22,3 +28,7 @@ LICENSE
 .Trash
 .Spotlight-V100
 .fseventsd
+
+# Backup files
+*.bak
+*-backup

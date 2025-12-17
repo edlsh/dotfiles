@@ -1,0 +1,98 @@
+# ============================================================
+# ZSH Configuration - Cross-Platform (chezmoi managed)
+# ============================================================
+
+# --- Environment ---
+typeset -U PATH  # Ensure unique PATH entries
+{{ template "path-common" . }}
+{{- if eq .chezmoi.os "darwin" }}
+export PATH="$HOME/.bun/bin:$PATH"
+{{- else }}
+export PATH="$HOME/.cargo/bin:$PATH"
+export COLORTERM=truecolor
+export TERM=xterm-256color
+export AWS_CLI_AUTO_PROMPT=on-partial
+export UV_TOOL_BIN_DIR="$HOME/.local/bin"
+
+# Load local AWS environment variables when available
+[[ -f "$HOME/AWS-examples/.aws.env" ]] && { set -a; source "$HOME/AWS-examples/.aws.env"; set +a; }
+{{- end }}
+
+# --- History ---
+HISTFILE=~/.zsh_history
+HISTSIZE=50000
+SAVEHIST=50000
+setopt HIST_IGNORE_ALL_DUPS HIST_FIND_NO_DUPS HIST_SAVE_NO_DUPS SHARE_HISTORY EXTENDED_HISTORY
+
+# --- Zinit Plugin Manager ---
+ZINIT_HOME="${XDG_DATA_HOME:-${HOME}/.local/share}/zinit/zinit.git"
+[ ! -d $ZINIT_HOME ] && mkdir -p "$(dirname $ZINIT_HOME)"
+[ ! -d $ZINIT_HOME/.git ] && git clone https://github.com/zdharma-continuum/zinit.git "$ZINIT_HOME"
+source "${ZINIT_HOME}/zinit.zsh"
+
+# --- Completions (let zinit handle compinit) ---
+zinit wait lucid for \
+    atinit"zicompinit; zicdreplay" \
+    zdharma-continuum/fast-syntax-highlighting \
+    atload"_zsh_autosuggest_start" \
+    zsh-users/zsh-autosuggestions \
+    blockf atpull'zinit creinstall -q .' \
+    zsh-users/zsh-completions
+
+# Git workflow enhancement
+zinit wait"0a" lucid for wfxr/forgit
+
+# --- Modern CLI Tools ---
+eval "$(mise activate zsh)"
+eval "$(starship init zsh)"
+eval "$(zoxide init zsh)"
+eval "$(atuin init zsh)"
+
+# Television for fuzzy finding
+command -v tv &>/dev/null && eval "$(tv init zsh)"
+
+# fzf completions
+{{- if eq .chezmoi.os "linux" }}
+[[ -f /usr/share/doc/fzf/examples/completion.zsh ]] && source /usr/share/doc/fzf/examples/completion.zsh
+{{- else }}
+source <(fzf --zsh)
+{{- end }}
+
+# --- Aliases ---
+{{ template "aliases" . }}
+alias zii="zinit"
+alias zi="__zoxide_zi"
+alias update-all="mise upgrade && mise reshim"
+{{- if eq .chezmoi.os "darwin" }}
+alias code='/Applications/Visual\ Studio\ Code.app/Contents/Resources/app/bin/code'
+{{- end }}
+
+# --- Session Finders ---
+fs() {
+    [[ "$1" == "--help" || "$1" == "-h" ]] && { find-session --help; return; }
+    eval "$(find-session --shell "$@" | sed '/^$/d')"
+}
+
+fcs-codex() {
+    [[ "$1" == "--help" || "$1" == "-h" ]] && { find-codex-session --help; return; }
+    eval "$(find-codex-session --shell "$@" | sed '/^$/d')"
+}
+
+# --- Platform-Specific ---
+{{- if eq .chezmoi.os "linux" }}
+# Keychain - SSH and GPG agent management
+command -v keychain >/dev/null 2>&1 && eval $(keychain --eval --quiet --agents ssh)
+{{- else }}
+# Bun completions (macOS)
+[[ -s "$HOME/.bun/_bun" ]] && source "$HOME/.bun/_bun"
+
+# VS Code shell integration (only in VS Code terminal)
+[[ "$TERM_PROGRAM" == "vscode" ]] && . "$(code --locate-shell-integration-path zsh)"
+{{- end }}
+
+# --- Optional Tool Loading ---
+[[ -f ~/.tmux_aliases ]] && source ~/.tmux_aliases
+[[ -f ~/.config/broot/launcher/bash/br ]] && source ~/.config/broot/launcher/bash/br
+
+# --- Secrets (1Password) ---
+{{ template "1password-secrets" . }}

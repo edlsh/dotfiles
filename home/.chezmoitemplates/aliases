@@ -1,0 +1,26 @@
+# Modern CLI aliases (eza)
+alias ls='eza --icons --color=always'
+alias la='eza -la --icons --color=always'
+alias ll='eza -l --icons --color=always'
+alias lt='eza --tree --icons --color=always'
+alias l.='eza -ld .* --icons --color=always'
+alias lls='eza -la --total-size --icons --color=always'
+alias lg='eza -la --git --icons --color=always'
+
+# Color aliases
+alias grep='grep --color=auto'
+alias fgrep='fgrep --color=auto'
+alias egrep='egrep --color=auto'
+alias diff='diff --color=auto'
+
+# AI coding assistants
+alias claudef="claude --dangerously-skip-permissions"
+alias codexf="codex --dangerously-bypass-approvals-and-sandbox"
+alias claude-second="CLAUDE_CONFIG_DIR=~/.claude-second claude"
+alias claudef2="CLAUDE_CONFIG_DIR=~/.claude-second claude --dangerously-skip-permissions"
+alias coderf='coder -- --danger-full-access'
+alias ccrf="ccr code --dangerously-skip-permissions"
+
+# AWS profile switching
+alias aws-course='export AWS_PROFILE=course'
+alias aws-default='export AWS_PROFILE=default'

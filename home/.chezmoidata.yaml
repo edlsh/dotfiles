@@ -1,0 +1,44 @@
+# Shared tool configuration across platforms
+tools:
+  # CLI tools installed on all platforms
+  common:
+    - zsh
+    - starship
+    - atuin
+    - tmux
+    - eza
+    - bat
+    - ripgrep
+    - fd
+    - fzf
+    - zoxide
+    - jq
+    - yq
+    - neovim
+    - git
+    - gh
+    - mise
+    - btop
+    - delta
+
+  # macOS-only tools
+  darwin:
+    - broot
+    - television
+
+  # Linux-only tools  
+  linux:
+    - keychain
+    - television
+
+# Platform-specific paths
+paths:
+  darwin:
+    homebrew: /opt/homebrew
+    gh: /opt/homebrew/bin/gh
+  linux:
+    homebrew: /home/linuxbrew/.linuxbrew
+    gh: /usr/bin/gh
+
+# Editor configuration
+editor: nvim
