@@ -45,9 +45,12 @@ ZINIT_HOME="${XDG_DATA_HOME:-${HOME}/.local/share}/zinit/zinit.git"
 [ ! -d $ZINIT_HOME/.git ] && git clone https://github.com/zdharma-continuum/zinit.git "$ZINIT_HOME"
 source "${ZINIT_HOME}/zinit.zsh"
 
-# --- Completions (let zinit handle compinit) ---
+# --- Completions ---
+# Initialize compinit early (required for tv and other tools that use compdef)
+autoload -Uz compinit && compinit
+
 zinit wait lucid for \
-    atinit"zicompinit; zicdreplay" \
+    atinit"zicdreplay" \
     zdharma-continuum/fast-syntax-highlighting \
     atload"_zsh_autosuggest_start" \
     zsh-users/zsh-autosuggestions \

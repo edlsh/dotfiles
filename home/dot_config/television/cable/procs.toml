@@ -4,12 +4,12 @@ description = "A channel to find and manage running processes"
 requirements = ["ps", "awk"]
 
 [source]
-command = "ps -u $USER -o pid=,comm= --no-headers | awk '!/systemd|dbus|pulseaudio|pipewire|gvfs|gnome-keyring|at-spi/ {print $1, $2}'"
+command = "ps -u $USER -o pid=,comm= | awk 'NF==2 {print $1, $2}'"
 display = "{split: :1}"
 output = "{split: :0}"
 
 [preview]
-command = "ps -p '{split: :0}' -o user,pid,ppid,state,%cpu,%mem,command | fold"
+command = "ps -p '{split: :0}' -o user=,pid=,ppid=,state=,%cpu=,%mem=,command= | fold"
 
 [actions.kill]
 description = "Kill the selected process (SIGKILL)"

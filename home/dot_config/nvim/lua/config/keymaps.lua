@@ -1,22 +1,16 @@
 local map = vim.keymap.set
 
-map("n", "<leader>ff", function()
-  require("telescope.builtin").find_files()
-end, { desc = "Find files" })
+-- fzf-lua (LazyVim 14.x default, replaces telescope)
+map("n", "<leader>ff", "<cmd>FzfLua files<cr>", { desc = "Find files" })
+map("n", "<leader>fg", "<cmd>FzfLua live_grep<cr>", { desc = "Live grep" })
+map("n", "<leader>fb", "<cmd>FzfLua buffers<cr>", { desc = "Find buffers" })
 
-map("n", "<leader>fg", function()
-  require("telescope.builtin").live_grep()
-end, { desc = "Live grep" })
+-- Buffers
+map("n", "<leader>bn", "<cmd>bnext<cr>", { desc = "Next buffer" })
+map("n", "<leader>bp", "<cmd>bprevious<cr>", { desc = "Previous buffer" })
 
-map("n", "<leader>fb", function()
-  require("telescope.builtin").buffers()
-end, { desc = "Find buffers" })
-
-map("n", "<leader>bn", ":bnext<CR>", { desc = "Next buffer" })
-map("n", "<leader>bp", ":bprevious<CR>", { desc = "Previous buffer" })
-
+-- Diagnostics toggle
 local diagnostics_active = true
-
 map("n", "<leader>td", function()
   diagnostics_active = not diagnostics_active
   if diagnostics_active then
@@ -25,23 +19,3 @@ map("n", "<leader>td", function()
     vim.diagnostic.disable()
   end
 end, { desc = "Toggle diagnostics" })
-
-map({ "n", "v" }, "<leader>ac", function()
-  vim.cmd("CodeCompanionChat")
-end, { desc = "CodeCompanion: chat" })
-
-map({ "n", "v" }, "<leader>aa", function()
-  vim.cmd("CodeCompanionActions")
-end, { desc = "CodeCompanion: actions" })
-
-map("n", "<leader>wd", function()
-  require("wtf").diagnose()
-end, { desc = "Debug diagnostic with AI" })
-
-map("n", "<leader>wf", function()
-  require("wtf").fix()
-end, { desc = "Fix diagnostic with AI" })
-
-map("n", "<leader>ws", function()
-  require("wtf").search()
-end, { desc = "Search diagnostic" })
