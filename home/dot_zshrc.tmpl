@@ -2,6 +2,14 @@
 # ZSH Configuration - Cross-Platform (chezmoi managed)
 # ============================================================
 
+{{- /* Get machineId with backward compatibility */ -}}
+{{- $machineId := "" -}}
+{{- if hasKey . "machineId" -}}
+{{-   $machineId = .machineId -}}
+{{- else if hasKey . "machine" -}}
+{{-   $machineId = .machine -}}
+{{- end -}}
+
 # --- Environment ---
 typeset -U PATH  # Ensure unique PATH entries
 
@@ -15,7 +23,7 @@ fi
 {{ template "path-common" . }}
 {{- if eq .chezmoi.os "darwin" }}
 export PATH="$HOME/.bun/bin:$PATH"
-{{- if eq .machineId "personal-mac" }}
+{{- if eq $machineId "personal-mac" }}
 export PATH="$HOME/.antigravity/antigravity/bin:$PATH"
 {{- end }}
 {{- else }}
@@ -87,7 +95,7 @@ alias update-all="mise upgrade && mise reshim"
 alias code='/Applications/Visual\ Studio\ Code.app/Contents/Resources/app/bin/code'
 {{- end }}
 
-{{- if eq .machineId "personal-mac" }}
+{{- if eq $machineId "personal-mac" }}
 # Antigravity browser alias
 alias ag='open -a "Antigravity" --args --enable-gpu-rasterization --enable-zero-copy'
 
