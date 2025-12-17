@@ -1,9 +1,6 @@
 # Homebrew Brewfile - Cross-platform packages
 # This file is used by run_onchange script to install packages
 
-# Taps
-tap "homebrew/bundle"
-
 # Shell & Terminal
 brew "zsh"
 brew "starship"
