@@ -4,6 +4,14 @@
 
 # --- Environment ---
 typeset -U PATH  # Ensure unique PATH entries
+
+{{- if eq .chezmoi.os "linux" }}
+# Linuxbrew (must be first to set up PATH)
+if [[ -d /home/linuxbrew/.linuxbrew ]]; then
+    eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
+fi
+{{- end }}
+
 {{ template "path-common" . }}
 {{- if eq .chezmoi.os "darwin" }}
 export PATH="$HOME/.bun/bin:$PATH"
