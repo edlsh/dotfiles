@@ -3,6 +3,9 @@
 [mgr]
 
 prepend_keymap = [
+  # Television fuzzy finder (Ctrl+T)
+  { on = [ "<C-t>" ], run = '''shell "tv" --block''', desc = "Open television fuzzy finder" },
+
   # Quick video preview with mpv (press 'v') - COMMENTED OUT to restore visual mode
   # { on = [ "v" ], run = '''shell "mpv --geometry=50%x50% --force-window=immediate --loop '$@'" --orphan''', desc = "Preview video in mpv" },
 
