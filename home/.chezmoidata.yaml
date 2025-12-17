@@ -42,3 +42,13 @@ paths:
 
 # Editor configuration
 editor: nvim
+
+# 1Password secrets (from "API Keys" vault)
+secrets:
+  OPENAI_API_KEY: "op://API Keys/OPENAI_API_KEY/credential"
+  OPENROUTER_API_KEY: "op://API Keys/OPENROUTER_API_KEY/credential"
+  GEMINI_API_KEY: "op://API Keys/GEMINI_API_KEY/credential"
+  EXA_API_KEY: "op://API Keys/EXA_API_KEY/credential"
+  GROQ_API_KEY: "op://Personal/GROQ_API_KEY/credential"
+  DEEPSEEK_API_KEY: "op://API Keys/DEEPSEEK_API_KEY/credential"
+  TAVILY_API_KEY: "op://API Keys/TAVILY_API_KEY/credential"
