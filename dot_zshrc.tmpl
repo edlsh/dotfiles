@@ -67,17 +67,18 @@ eval "$(starship init zsh)"
 eval "$(zoxide init zsh)"
 eval "$(atuin init zsh)"
 
-{{- if eq .chezmoi.os "linux" }}
-# Television for fuzzy finding (Linux)
+# Television for fuzzy finding (cross-platform)
 if command -v tv &>/dev/null; then
   eval "$(tv init zsh)"
 fi
+
+{{- if eq .chezmoi.os "linux" }}
 # fzf completion only (keybindings replaced by television)
 if [[ -f /usr/share/doc/fzf/examples/completion.zsh ]]; then
   source /usr/share/doc/fzf/examples/completion.zsh
 fi
 {{- else }}
-# fzf full integration (macOS)
+# fzf completions (macOS - keybindings replaced by television)
 source <(fzf --zsh)
 {{- end }}
 
