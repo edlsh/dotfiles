@@ -1,0 +1,21 @@
+#!/bin/bash
+# =============================================================================
+# Brewfile Sync - Runs when Brewfile content changes
+# Brewfile hash: {{ include "Brewfile" | sha256sum }}
+# =============================================================================
+
+set -eufo pipefail
+
+{{ if eq .chezmoi.os "darwin" -}}
+echo "📦 Syncing Homebrew packages from Brewfile..."
+
+if command -v brew &>/dev/null; then
+    brew bundle --file="{{ .chezmoi.sourceDir }}/Brewfile"
+    echo "✅ Brewfile sync complete!"
+else
+    echo "⚠️  Homebrew not installed, skipping Brewfile sync"
+fi
+{{ else -}}
+# Brewfile sync is macOS-only for now
+exit 0
+{{ end -}}
