@@ -60,7 +60,7 @@ return {
   -- Linting for DevOps files
   {
     "mfussenegger/nvim-lint",
-    event = { "BufReadPre", "BufNewFile" },
+    event = { "BufWritePost" },
     config = function()
       require("lint").linters_by_ft = {
         yaml = { "cfn-lint", "yamllint" },

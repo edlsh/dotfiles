@@ -1,21 +1,16 @@
 local map = vim.keymap.set
 
--- fzf-lua (LazyVim 14.x default, replaces telescope)
-map("n", "<leader>ff", "<cmd>FzfLua files<cr>", { desc = "Find files" })
-map("n", "<leader>fg", "<cmd>FzfLua live_grep<cr>", { desc = "Live grep" })
-map("n", "<leader>fb", "<cmd>FzfLua buffers<cr>", { desc = "Find buffers" })
+-- Better line movement in visual mode
+map("v", "J", ":m '>+1<CR>gv=gv", { desc = "Move selection down" })
+map("v", "K", ":m '<-2<CR>gv=gv", { desc = "Move selection up" })
 
--- Buffers
-map("n", "<leader>bn", "<cmd>bnext<cr>", { desc = "Next buffer" })
-map("n", "<leader>bp", "<cmd>bprevious<cr>", { desc = "Previous buffer" })
+-- Keep cursor centered when scrolling
+map("n", "<C-d>", "<C-d>zz", { desc = "Scroll down centered" })
+map("n", "<C-u>", "<C-u>zz", { desc = "Scroll up centered" })
 
--- Diagnostics toggle
-local diagnostics_active = true
-map("n", "<leader>td", function()
-  diagnostics_active = not diagnostics_active
-  if diagnostics_active then
-    vim.diagnostic.enable()
-  else
-    vim.diagnostic.disable()
-  end
-end, { desc = "Toggle diagnostics" })
+-- Keep search results centered
+map("n", "n", "nzzzv", { desc = "Next search centered" })
+map("n", "N", "Nzzzv", { desc = "Prev search centered" })
+
+-- Quick save
+map({ "n", "v", "i" }, "<C-s>", "<cmd>w<cr><esc>", { desc = "Save file" })
