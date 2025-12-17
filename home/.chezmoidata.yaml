@@ -45,10 +45,10 @@ editor: nvim
 
 # 1Password secrets (using correct field names per item)
 secrets:
-  OPENAI_API_KEY: "op://API Keys/OPENAI_API_KEY/api key"
-  OPENROUTER_API_KEY: "op://API Keys/OPENROUTER_API_KEY/credential"
-  GEMINI_API_KEY: "op://API Keys/GEMINI_API_KEY/credential"
-  EXA_API_KEY: "op://API Keys/EXA_API_KEY/credential"
-  GROQ_API_KEY: "op://Personal/GROQ_API_KEY/credential"
-  DEEPSEEK_API_KEY: "op://API Keys/DEEPSEEK_API_KEY/credential"
-  TAVILY_API_KEY: "op://API Keys/TAVILY_API_KEY/credential"
+  OPENAI_API_KEY: "op://Development/OPENAI_API_KEY/api key"
+  OPENROUTER_API_KEY: "op://Development/OPENROUTER_API_KEY/token"
+  GEMINI_API_KEY: "op://Development/GEMINI_API_KEY/password"
+  EXA_API_KEY: "op://Development/EXA_API_KEY/password"
+  GROQ_API_KEY: "op://Development/GROQ_API_KEY/credential"
+  DEEPSEEK_API_KEY: "op://Development/DEEPSEEK_API_KEY/password"
+  TAVILY_API_KEY: "op://Development/TAVILY_API_KEY/password"

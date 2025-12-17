@@ -15,6 +15,9 @@ fi
 {{ template "path-common" . }}
 {{- if eq .chezmoi.os "darwin" }}
 export PATH="$HOME/.bun/bin:$PATH"
+{{- if eq .machine "personal-mac" }}
+export PATH="$HOME/.antigravity/antigravity/bin:$PATH"
+{{- end }}
 {{- else }}
 export PATH="$HOME/.cargo/bin:$PATH"
 export COLORTERM=truecolor
@@ -30,7 +33,11 @@ export UV_TOOL_BIN_DIR="$HOME/.local/bin"
 HISTFILE=~/.zsh_history
 HISTSIZE=50000
 SAVEHIST=50000
-setopt HIST_IGNORE_ALL_DUPS HIST_FIND_NO_DUPS HIST_SAVE_NO_DUPS SHARE_HISTORY EXTENDED_HISTORY
+setopt HIST_IGNORE_ALL_DUPS
+setopt HIST_FIND_NO_DUPS
+setopt HIST_SAVE_NO_DUPS
+setopt SHARE_HISTORY
+setopt EXTENDED_HISTORY
 
 # --- Zinit Plugin Manager ---
 ZINIT_HOME="${XDG_DATA_HOME:-${HOME}/.local/share}/zinit/zinit.git"
@@ -50,8 +57,10 @@ zinit wait lucid for \
 # Git workflow enhancement
 zinit wait"0a" lucid for wfxr/forgit
 
-# --- Modern CLI Tools ---
+# --- mise (replaces nvm/pyenv/rbenv) ---
 eval "$(mise activate zsh)"
+
+# --- Modern CLI Tools ---
 eval "$(starship init zsh)"
 eval "$(zoxide init zsh)"
 eval "$(atuin init zsh)"
@@ -73,6 +82,23 @@ alias zi="__zoxide_zi"
 alias update-all="mise upgrade && mise reshim"
 {{- if eq .chezmoi.os "darwin" }}
 alias code='/Applications/Visual\ Studio\ Code.app/Contents/Resources/app/bin/code'
+{{- end }}
+
+{{- if eq .machine "personal-mac" }}
+# Antigravity browser alias
+alias ag='open -a "Antigravity" --args --enable-gpu-rasterization --enable-zero-copy'
+
+# CLIProxyAPIPlus / Amp CLI configuration
+export AMP_URL="http://localhost:8317"
+export AMP_API_KEY="cli-proxy-local-key"
+
+# CLIProxyAPI OAuth Login Aliases
+alias proxy-antigravity="~/.cli-proxy-api/scripts/antigravity-login.sh"
+alias proxy-claude="~/.cli-proxy-api/scripts/claude-login.sh"
+alias proxy-codex="~/.cli-proxy-api/scripts/codex-login.sh"
+alias proxy-gemini="~/.cli-proxy-api/scripts/gemini-login.sh"
+alias proxy-status="ls -la ~/.cli-proxy-api/*.json"
+alias proxy-github="~/.cli-proxy-api/scripts/github-copilot-login.sh"
 {{- end }}
 
 # --- Session Finders ---

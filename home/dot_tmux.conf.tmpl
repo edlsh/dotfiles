@@ -12,16 +12,18 @@ set -g base-index 1
 setw -g pane-base-index 1
 set -g renumber-windows on
 set -g mouse on
-set -g history-limit 10000
-set -g escape-time 1
-set -s repeat-time 600
+set -g history-limit 50000
+set -g escape-time 0
+set -sg repeat-time 600
+set -g focus-events on
+set -g aggressive-resize on
 
 # Performance optimizations
-set -g set-clipboard on
+set -g set-clipboard external
 set -g detach-on-destroy off
-# allow-passthrough requires tmux >= 3.3
-if-shell 'tmux -V | grep -qE "tmux (3\.[3-9]|[4-9])"' \
-  'set -g allow-passthrough on'
+set -g allow-passthrough on
+set -g lock-after-time 300
+if-shell 'command -v vlock >/dev/null' "set -g lock-command 'vlock'" "set -g lock-command 'tmux lock-server'"
 
 # Key bindings
 set -g prefix C-a
@@ -49,78 +51,77 @@ bind -n M-l run "(tmux display-message -p '#{pane_current_command}' | grep -iqE 
 # Vi mode for better copy experience
 setw -g mode-keys vi
 
-# Vi-style copy mode bindings (OS-specific)
+# Status bar placement
+set -g status-position top
+
+# Vi-style copy mode bindings
 {{- if eq .chezmoi.os "darwin" }}
 bind-key -T copy-mode-vi v send-keys -X begin-selection
 bind-key -T copy-mode-vi y send-keys -X copy-pipe-and-cancel 'pbcopy'
 bind-key -T copy-mode-vi Enter send-keys -X copy-pipe-and-cancel 'pbcopy'
 {{- else }}
 bind-key -T copy-mode-vi v send-keys -X begin-selection
+bind-key -T copy-mode-vi y send-keys -X copy-pipe-and-cancel 'xclip -selection clipboard'
+bind-key -T copy-mode-vi Enter send-keys -X copy-pipe-and-cancel 'xclip -selection clipboard'
 {{- end }}
 
 # Catppuccin theme configuration
 set -g @catppuccin_flavour 'mocha'
 
-# Catppuccin window settings
-set -g @catppuccin_window_left_separator ""
+# Catppuccin theme styling (rounded style)
+set -g @catppuccin_window_left_separator " "
 set -g @catppuccin_window_right_separator " "
-set -g @catppuccin_window_middle_separator " █"
+set -g @catppuccin_window_middle_separator "█"
 set -g @catppuccin_window_number_position "right"
-set -g @catppuccin_window_default_fill "all"
-set -g @catppuccin_window_default_text "#I:#W"  # Show number:name
-set -g @catppuccin_window_current_fill "all"
-set -g @catppuccin_window_current_text "#I:#W"  # Show number:name
-
-# Catppuccin status bar settings
-set -g @catppuccin_status_modules_right "cpu load directory session date_time"
-set -g @catppuccin_status_left_separator  " "
-set -g @catppuccin_status_right_separator ""
+set -g @catppuccin_window_default_fill "number"
+set -g @catppuccin_window_default_text "#W "
+set -g @catppuccin_window_current_fill "number"
+set -g @catppuccin_window_current_text "#W#{?window_zoomed_flag,(),} "
+set -g @catppuccin_status_modules_right "date_time directory"
+set -g @catppuccin_date_time_text "%I:%M %p"
+set -g @catppuccin_status_modules_left "session"
+set -g @catppuccin_status_left_separator " "
+set -g @catppuccin_status_right_separator " "
+set -g @catppuccin_status_right_separator_inverse "no"
 set -g @catppuccin_status_fill "icon"
 set -g @catppuccin_status_connect_separator "no"
-
-# Catppuccin module settings
-set -g @catppuccin_date_time_text "%H:%M %d-%b-%y"
+set -g @catppuccin_directory_text "#{b:pane_current_path}"
 
 # List of plugins
 set -g @plugin 'tmux-plugins/tpm'
 set -g @plugin 'tmux-plugins/tmux-sensible'
-set -g @plugin 'catppuccin/tmux'
-set -g @plugin 'tmux-plugins/tmux-yank'
-{{- if eq .chezmoi.os "darwin" }}
+set -g @plugin 'omerxx/catppuccin-tmux'
 set -g @plugin 'tmux-plugins/tmux-resurrect'
 set -g @plugin 'tmux-plugins/tmux-continuum'
-{{- end }}
+set -g @plugin 'NHDaly/tmux-better-mouse-mode'
 set -g @plugin 'tmux-plugins/tmux-fzf'
-set -g @plugin 'laktak/extrakto'
-set -g @plugin 'tmux-plugins/tmux-open'
+set -g @plugin 'omerxx/tmux-sessionx'
 set -g @plugin 'alexwforsythe/tmux-which-key'
-set -g @plugin 'tmux-plugins/tmux-cpu'
-set -g @plugin 'richin13/tmux-plugin-playerctl'
-set -g @plugin 'tmux-plugins/tmux-net-speed'
+set -g @plugin 'tmux-plugins/tmux-yank'
 
 # Mouse copy configuration for tmux-yank
 set -g @yank_selection_mouse 'clipboard'
 set -g @yank_selection 'clipboard'
 set -g @yank_action 'copy-pipe-and-cancel'
+set -g @yank_with_mouse on
 
-{{- if eq .chezmoi.os "darwin" }}
 # tmux-resurrect settings
 set -g @resurrect-capture-pane-contents 'on'
 set -g @resurrect-strategy-nvim 'session'
 
 # tmux-continuum settings
-set -g @continuum-restore 'off'
+set -g @continuum-restore 'on'
 set -g @continuum-save-interval '15'
-{{- end }}
 
-# Fuzzy finding (uppercase to avoid conflicts)
-set -g @fzf-session-bind 'S'  # prefix + Shift+s → session fuzzy finder
+# SessionX binding (move off f)
+set -g @sessionx-bind 's'
+
+# Fuzzy finding (tmux-fzf) on lowercase f
+set-environment -g TMUX_FZF_LAUNCH_KEY f
+unbind-key F
+
 set -g @fzf-window-bind 'W'   # prefix + Shift+w → window fuzzy finder
 set -g @fzf-pane-bind 'P'     # prefix + Shift+p → pane fuzzy finder
 
 # Initialize TMUX plugin manager (keep this line at the very bottom of tmux.conf)
 run '~/.tmux/plugins/tpm/tpm'
-
-# Post-TPM overrides: ensure our values win over tmux-sensible
-set -g escape-time 1
-set -g history-limit 10000
