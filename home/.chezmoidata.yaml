@@ -43,9 +43,9 @@ paths:
 # Editor configuration
 editor: nvim
 
-# 1Password secrets (from "API Keys" vault)
+# 1Password secrets (using correct field names per item)
 secrets:
-  OPENAI_API_KEY: "op://API Keys/OPENAI_API_KEY/credential"
+  OPENAI_API_KEY: "op://API Keys/OPENAI_API_KEY/api key"
   OPENROUTER_API_KEY: "op://API Keys/OPENROUTER_API_KEY/credential"
   GEMINI_API_KEY: "op://API Keys/GEMINI_API_KEY/credential"
   EXA_API_KEY: "op://API Keys/EXA_API_KEY/credential"
