@@ -65,15 +65,15 @@ eval "$(starship init zsh)"
 eval "$(zoxide init zsh)"
 eval "$(atuin init zsh)"
 
-# Television for fuzzy finding
-command -v tv &>/dev/null && eval "$(tv init zsh)"
-
-# fzf completions
+# fzf completions (source before tv so television keybindings take priority)
 {{- if eq .chezmoi.os "linux" }}
 [[ -f /usr/share/doc/fzf/examples/completion.zsh ]] && source /usr/share/doc/fzf/examples/completion.zsh
 {{- else }}
 source <(fzf --zsh)
 {{- end }}
+
+# Television for fuzzy finding (overwrites fzf's ^R and ^T bindings)
+command -v tv &>/dev/null && eval "$(tv init zsh)"
 
 # --- Aliases ---
 {{ template "aliases" . }}
