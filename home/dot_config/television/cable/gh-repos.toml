@@ -1,0 +1,19 @@
+[metadata]
+name = "gh-repos"
+description = "Browse and clone your GitHub repositories"
+requirements = ["gh"]
+
+[source]
+command = "gh repo list --limit 100 --json nameWithOwner,description -q '.[] | .nameWithOwner'"
+
+[preview]
+command = "gh repo view '{0}' --json description,url,stargazerCount,forkCount,updatedAt,primaryLanguage -t '{{.description}}\n\nURL: {{.url}}\nStars: {{.stargazerCount}} | Forks: {{.forkCount}}\nLanguage: {{.primaryLanguage.name}}\nUpdated: {{.updatedAt}}'"
+
+[keybindings]
+ctrl-o = "actions:clone"
+enter = "actions:clone"
+
+[actions.clone]
+description = "Clone the selected repository"
+command = "gh repo clone '{}' && echo '\n✓ Cloned to ./$(basename {})'"
+mode = "execute"
