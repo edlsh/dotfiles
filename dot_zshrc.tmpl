@@ -1,13 +1,42 @@
 # ============================================================
-# ZSH Configuration - Modernized
+# ZSH Configuration - Cross-Platform (chezmoi managed)
 # ============================================================
+
+{{- if eq .chezmoi.os "linux" }}
+# --- Warp Terminal Integration (Linux) ---
+if [[ "$-" == *i* ]]; then
+  printf $'\eP$f{"hook": "SourcedRcFileForWarp", "value": { "shell": "zsh", "uname": "Linux" }}\e\\'
+fi
+{{- end }}
 
 # --- Environment ---
 typeset -U PATH  # Ensure unique PATH entries
 export PATH="$HOME/.local/bin:$PATH"
 export PATH="$HOME/.atuin/bin:$PATH"
+
+{{- if eq .chezmoi.os "darwin" }}
+# macOS-specific paths
 export PATH="$HOME/.bun/bin:$PATH"
-export PATH="/Users/enzolucchesi/.antigravity/antigravity/bin:$PATH"
+{{- end }}
+
+{{- if eq .chezmoi.os "linux" }}
+# Linux-specific paths
+export PATH="$HOME/.cargo/bin:$PATH"
+
+# Terminal color support
+export COLORTERM=truecolor
+export TERM=xterm-256color
+
+# AWS CLI configuration
+export AWS_CLI_AUTO_PROMPT=on-partial
+
+# Load local AWS environment variables when available
+if [[ -f "$HOME/AWS-examples/.aws.env" ]]; then
+  set -a
+  source "$HOME/AWS-examples/.aws.env"
+  set +a
+fi
+{{- end }}
 
 # --- History ---
 HISTFILE=~/.zsh_history
@@ -44,7 +73,20 @@ eval "$(mise activate zsh)"
 eval "$(starship init zsh)"
 eval "$(zoxide init zsh)"
 eval "$(atuin init zsh)"
+
+{{- if eq .chezmoi.os "linux" }}
+# Television for fuzzy finding (Linux)
+if command -v tv &>/dev/null; then
+  eval "$(tv init zsh)"
+fi
+# fzf completion only (keybindings replaced by television)
+if [[ -f /usr/share/doc/fzf/examples/completion.zsh ]]; then
+  source /usr/share/doc/fzf/examples/completion.zsh
+fi
+{{- else }}
+# fzf full integration (macOS)
 source <(fzf --zsh)
+{{- end }}
 
 # --- Eza Aliases (modern ls) ---
 alias ls='eza --icons --color=always'
@@ -53,12 +95,22 @@ alias ll='eza -l --icons --color=always'
 alias lt='eza --tree --icons --color=always'
 alias l.='eza -ld .* --icons --color=always'
 alias lls='eza -la --total-size --icons --color=always'
-alias lg='eza -la --git --icons --color=always'  # Show git status
+alias lg='eza -la --git --icons --color=always'
+
+# --- Color Aliases ---
+alias grep='grep --color=auto'
+alias fgrep='fgrep --color=auto'
+alias egrep='egrep --color=auto'
+alias diff='diff --color=auto'
 
 # --- Custom Aliases ---
 alias zii="zinit"
 alias zi="__zoxide_zi"
+alias update-all="mise upgrade && mise reshim"
+
+{{- if eq .chezmoi.os "darwin" }}
 alias code='/Applications/Visual\ Studio\ Code.app/Contents/Resources/app/bin/code'
+{{- end }}
 
 # Claude/Codex aliases
 alias claudef="claude --dangerously-skip-permissions"
@@ -83,10 +135,31 @@ fcs-codex() {
     eval "$(find-codex-session --shell "$@" | sed '/^$/d')"
 }
 
+{{- if eq .chezmoi.os "linux" }}
+# --- Keychain - SSH and GPG agent management (Linux) ---
+if command -v keychain >/dev/null 2>&1; then
+    eval $(keychain --eval --quiet --agents ssh)
+fi
+{{- end }}
+
 # --- Optional Tool Loading ---
 [[ -f ~/.tmux_aliases ]] && source ~/.tmux_aliases
 [[ -f ~/.config/broot/launcher/bash/br ]] && source ~/.config/broot/launcher/bash/br
+
+{{- if eq .chezmoi.os "darwin" }}
+# Bun completions (macOS - standalone install)
 [[ -s "$HOME/.bun/_bun" ]] && source "$HOME/.bun/_bun"
 
 # VS Code shell integration (only in VS Code terminal)
 [[ "$TERM_PROGRAM" == "vscode" ]] && . "$(code --locate-shell-integration-path zsh)"
+
+# 1Password secrets integration
+if command -v op &>/dev/null && [[ -f ~/.secrets/op.env ]]; then
+    eval "$(op run --env-file ~/.secrets/op.env -- env | grep -E '^(OPENROUTER|OPENAI|GEMINI)_API_KEY=' | sed 's/^/export /')" 2>/dev/null
+fi
+{{- end }}
+
+{{- if eq .chezmoi.os "linux" }}
+# uv Python tool management
+export UV_TOOL_BIN_DIR="$HOME/.local/bin"
+{{- end }}

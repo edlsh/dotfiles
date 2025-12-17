@@ -1,0 +1,15 @@
+
+. "$HOME/.atuin/bin/env"
+. "$HOME/.cargo/env"
+
+{{- if eq .chezmoi.os "linux" }}
+# Linuxbrew
+if [[ -d /home/linuxbrew/.linuxbrew ]]; then
+    eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
+fi
+
+# User local bin
+if [ -d "$HOME/.local/bin" ] ; then
+    PATH="$HOME/.local/bin:$PATH"
+fi
+{{- end }}

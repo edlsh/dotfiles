@@ -15,8 +15,26 @@ eval "$(atuin init bash)"
 . "$HOME/.cargo/env"
 
 # --- Broot ---
-source /Users/enzolucchesi/.config/broot/launcher/bash/br
+{{- if eq .chezmoi.os "darwin" }}
+[[ -f ~/.config/broot/launcher/bash/br ]] && source ~/.config/broot/launcher/bash/br
+{{- else }}
+[[ -f ~/.config/broot/launcher/bash/br ]] && source ~/.config/broot/launcher/bash/br
+{{- end }}
 
+{{- if eq .chezmoi.os "linux" }}
+# --- Linuxbrew ---
+if [[ -d /home/linuxbrew/.linuxbrew ]]; then
+    eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
+fi
+
+# --- fzf ---
+[ -f ~/.fzf.bash ] && source ~/.fzf.bash
+
+# --- Tmux aliases ---
+[[ -f ~/.tmux_aliases ]] && source ~/.tmux_aliases
+{{- end }}
+
+{{- if eq .chezmoi.os "darwin" }}
 # ============================================================
 # API Keys - Loaded via 1Password
 # ============================================================
@@ -28,3 +46,4 @@ source /Users/enzolucchesi/.config/broot/launcher/bash/br
 if command -v op &> /dev/null && [[ -f ~/.secrets/op.env ]]; then
     eval "$(op run --env-file ~/.secrets/op.env -- env | grep -E '^(OPENROUTER|OPENAI|GEMINI)_API_KEY=' | sed 's/^/export /')" 2>/dev/null
 fi
+{{- end }}
