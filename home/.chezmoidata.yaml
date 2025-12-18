@@ -84,17 +84,14 @@ theme:
 
 # -----------------------------------------------------------------------------
 # 1Password Secrets
-# Using op:// secret reference syntax
+# Using op:// secret reference syntax from chezmoi-secrets item
 # See: https://developer.1password.com/docs/cli/secret-reference-syntax
 # -----------------------------------------------------------------------------
 secrets:
-  OPENAI_API_KEY: "op://Development/OPENAI_API_KEY/api key"
-  OPENROUTER_API_KEY: "op://Development/OPENROUTER_API_KEY/token"
-  GEMINI_API_KEY: "op://Development/GEMINI_API_KEY/password"
-  EXA_API_KEY: "op://Development/EXA_API_KEY/password"
-  GROQ_API_KEY: "op://Development/GROQ_API_KEY/credential"
-  DEEPSEEK_API_KEY: "op://Development/DEEPSEEK_API_KEY/password"
-  TAVILY_API_KEY: "op://Development/TAVILY_API_KEY/password"
+  OPENAI_API_KEY: "op://Development/chezmoi-secrets/OPENAI_API_KEY"
+  OPENROUTER_API_KEY: "op://Development/chezmoi-secrets/OPENROUTER_API_KEY"
+  GEMINI_API_KEY: "op://Development/chezmoi-secrets/GEMINI_API_KEY"
+  EXA_API_KEY: "op://Development/chezmoi-secrets/EXA_API_KEY"
 
 # -----------------------------------------------------------------------------
 # Machine-Specific Feature Flags
